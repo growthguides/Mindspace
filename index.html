@@ -1,1 +1,120 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mindspace - For Everyone</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FBF9F6;--card:#fff;--text:#1F1D1B;--muted:#8B8680;--border:#EDE8E3;--accent:#FF6B35;--green:#2E7D32}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
+.nav{padding:16px 24px;display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto}
+.logo{font-family:'DM Serif Display',serif;font-size:26px;display:flex;gap:10px;align-items:center}.logo i{width:34px;height:34px;background:var(--text);color:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:18px}
+.container{max-width:1200px;margin:0 auto;padding:0 24px 40px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:24px;box-shadow:0 4px 24px rgba(0,0,0,.04)}
+.step{display:none}.step.active{display:block}
+.personas{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:20px}
+.persona{border:2px solid var(--border);border-radius:20px;padding:20px;cursor:pointer;transition:.2s;text-align:center}
+.persona:hover{border-color:var(--text);transform:translateY(-2px)}.persona.selected{border-color:var(--text);background:var(--text);color:#fff}
+.persona.icon{font-size:36px;margin-bottom:8px}.persona h4{font-size:16px;margin-bottom:4px}.persona p{font-size:12px;opacity:.7;line-height:1.4}
+.btn{padding:12px 22px;border-radius:100px;border:1px solid var(--border);background:var(--card);font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
+.input{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:12px;font-size:15px;outline:none;margin-top:8px}
+.grid2{display:grid;grid-template-columns:1.2fr.8fr;gap:24px;margin-top:24px}@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.mood-row{display:flex;gap:10px;margin:12px 0;flex-wrap:wrap}
+.mood{padding:8px 16px;border-radius:100px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:14px}
+.mood.selected{background:var(--text);color:#fff;border-color:var(--text)}
+textarea{width:100%;min-height:280px;border:1px solid var(--border);border-radius:16px;padding:16px;font-family:'DM Serif Display',serif;font-size:18px;line-height:1.6;outline:none;resize:none}
+.wordbar{display:flex;align-items:center;gap:16px;margin:16px 0}.bar{flex:1;height:8px;background:var(--border);border-radius:100px;overflow:hidden}.fill{height:100%;background:var(--accent);width:0%;transition:.3s}
+.insight{background:linear-gradient(135deg,#FFF7ED,#FFEBD6);border:1px solid #FFD5B8;border-radius:16px;padding:20px;margin-top:16px}
+.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.statbox{background:var(--bg);border-radius:16px;padding:16px;text-align:center}.statbox b{font-size:28px;display:block}.statbox span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.tag{padding:4px 10px;border-radius:100px;font-size:11px;font-weight:700;display:inline-block;margin:4px 4px 0 0}
+</style>
+</head>
+<body>
+<div class="nav"><div class="logo"><i>M</i> mindspace</div><div style="font-size:13px;color:var(--muted)">For High School • Graduates • Teachers • Homemakers • Corporate</div></div>
+<div class="container">
+<div class="step active" id="step1">
+  <div class="card" style="max-width:900px;margin:0 auto">
+    <h1 style="font-family:'DM Serif Display',serif;font-size:32px">Who are you? We'll personalize Mindspace for you.</h1>
+    <p style="color:var(--muted);margin-top:8px">Based on your role, AI Mentor gives different insights + weekly reports</p>
+    <div class="personas">
+      <div class="persona" data-role="highschool" onclick="selectPersona('highschool')"><div class="icon">🎒</div><h4>High School</h4><p>Class 8-12, exam stress</p></div>
+      <div class="persona" data-role="graduate" onclick="selectPersona('graduate')"><div class="icon">🎓</div><h4>Graduating</h4><p>College, career, placements</p></div>
+      <div class="persona" data-role="teacher" onclick="selectPersona('teacher')"><div class="icon">📚</div><h4>Teachers</h4><p>Burnout, balance</p></div>
+      <div class="persona" data-role="housewife" onclick="selectPersona('housewife')"><div class="icon">🏡</div><h4>Homemakers</h4><p>Emotional load, me-time</p></div>
+      <div class="persona" data-role="corporate" onclick="selectPersona('corporate')"><div class="icon">💼</div><h4>Corporate</h4><p>Work stress, growth</p></div>
+    </div>
+    <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div><label style="font-weight:600;font-size:14px">Your Name</label><input class="input" id="nameInput" placeholder="e.g. Ananya"></div>
+      <div><label style="font-weight:600;font-size:14px">WhatsApp</label><input class="input" id="phoneInput" placeholder="+91..."></div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:24px;width:100%;justify-content:center;padding:16px" onclick="goToApp()">Continue to My Mindspace →</button>
+  </div>
+</div>
+<div class="step" id="step2">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+    <h2 style="font-family:'DM Serif Display',serif" id="welcomeText">Hi, welcome</h2>
+    <div style="display:flex;gap:8px"><span class="tag" style="background:#EDE8E3" id="roleTag">Role: Student</span><button class="btn" onclick="showStep(1)" style="padding:8px 14px;font-size:12px">Change Role</button></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="font-family:'DM Serif Display',serif">Today's Check-in</h3><div style="font-weight:700" id="wordCount">0 / 750 words</div></div>
+      <div style="margin-top:16px">
+        <label style="font-weight:600;font-size:13px">1. How are you feeling?</label>
+        <div class="mood-row">
+          <div class="mood" onclick="selectMood(this)">😊 Happy</div><div class="mood" onclick="selectMood(this)">😰 Anxious</div><div class="mood" onclick="selectMood(this)">😤 Stressed</div><div class="mood" onclick="selectMood(this)">😔 Low</div><div class="mood" onclick="selectMood(this)">😴 Tired</div><div class="mood" onclick="selectMood(this)">🤩 Motivated</div>
+        </div>
+        <div style="margin-top:12px"><label style="font-weight:600;font-size:13px" id="q2Label">2. What's on your mind?</label><input class="input" id="q2"></div>
+        <div style="margin-top:12px"><label style="font-weight:600;font-size:13px" id="q3Label">3. What would make today better?</label><input class="input" id="q3"></div>
+      </div>
+      <div class="wordbar"><div class="bar"><div class="fill" id="fill"></div></div></div>
+      <textarea id="journal" placeholder="Now dump everything..."></textarea>
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn" style="background:#FFF0EB;border-color:#FFD5C2;color:#FF6B35" id="voiceBtn" onclick="toggleVoice()">🎙️ Voice Note to Text</button>
+        <button class="btn btn-primary" onclick="generateInsight()">✨ Get AI Mentor Insight</button>
+        <button class="btn" onclick="saveEntry()">Save</button>
+      </div>
+      <div id="voiceStatus" style="display:none;margin-top:8px;font-size:12px;color:var(--muted)">Listening... Speak in Telugu / Hindi / English</div>
+      <div id="insightBox" class="insight" style="display:none">
+        <h4>🤖 Your AI Mentor says</h4>
+        <p id="insightText" style="margin-top:10px;line-height:1.6;font-size:14px"></p>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap" id="insightTags"></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <h3 style="font-family:'DM Serif Display',serif">Weekly Report Preview</h3>
+        <div class="report-grid">
+          <div class="statbox"><b id="wWords">0</b><span>Words</span></div>
+          <div class="statbox"><b id="wEntries">0</b><span>Entries</span></div>
+          <div class="statbox"><b id="wMood">-</b><span>Top Mood</span></div>
+        </div>
+        <div style="margin-top:16px;background:#FBF9F6;border-radius:12px;padding:12px;font-size:13px;line-height:1.5" id="weeklySummary">Write 3 entries to generate report.</div>
+      </div>
+      <div class="card"><h3 style="font-family:'DM Serif Display',serif">How Mindspace Helps You (<span id="roleName">High School</span>)</h3><ul style="margin-top:12px;font-size:13px;line-height:1.7;color:var(--muted);padding-left:16px" id="roleBenefits"></ul></div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+let selectedRole='highschool';let selectedMood='';
+const roleData={
+ highschool:{name:'High School Student',q2:'Which subject / exam is stressing you?',q3:'One small win you want today?',benefits:['Daily 5-min focus dump','Exam anxiety tracked','Parent pressure coping','Telugu/Hindi voice'],prompt:'School pressure? Dump it all here.'},
+ graduate:{name:'Graduating Student',q2:'Career confusion - what options are in mind?',q3:'One action for placements today?',benefits:['Career clarity prompts','Placement anxiety tracker','Weekly skill report','AI roadmap'],prompt:'Future confusion? Let AI mentor untangle.'},
+ teacher:{name:'Teacher',q2:'What happened in class today?',q3:'What do you need to recharge tonight?',benefits:['Burnout early signals','Classroom emotional load','Gratitude + boundary','Self-care actions'],prompt:'Teaching is emotional labor. Unload here.'},
+ housewife:{name:'Homemaker',q2:'What felt heavy in family today?',q3:'What is one thing just for YOU today?',benefits:['Emotional load visualized','Identity beyond roles','Family trigger patterns','Voice note - no typing'],prompt:'Your feelings matter too. Space for you.'},
+ corporate:{name:'Corporate',q2:'What work situation is looping?',q3:'One boundary or growth step today?',benefits:['Work stress pattern','Imposter syndrome insights','Meeting dump','Weekly energy report'],prompt:'Work on mind after hours? Dump before sleep.'}
+};
+function selectPersona(r){selectedRole=r;document.querySelectorAll('.persona').forEach(p=>p.classList.remove('selected'));document.querySelector(`[data-role=${r}]`).classList.add('selected');}
+function selectMood(el){document.querySelectorAll('.mood').forEach(m=>m.classList.remove('selected'));el.classList.add('selected');selectedMood=el.textContent;}
+function showStep(n){document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));document.getElementById('step'+n).classList.add('active');}
+function goToApp(){const name=document.getElementById('nameInput').value||'Friend';const data=roleData[selectedRole];document.getElementById('welcomeText').textContent=`Hi ${name}, your Mindspace is ready`;document.getElementById('roleTag').textContent=`Role: ${data.name}`;document.getElementById('roleName').textContent=data.name;document.getElementById('q2Label').textContent=`2. ${data.q2}`;document.getElementById('q3Label').textContent=`3. ${data.q3}`;document.getElementById('roleBenefits').innerHTML=data.benefits.map(b=>`<li>${b}</li>`).join('');showStep(2);loadStats();}
+const journal=document.getElementById('journal');journal.addEventListener('input',()=>{const w=journal.value.trim()?journal.value.trim().split(/\s+/).length:0;document.getElementById('wordCount').textContent=w+' / 750 words';document.getElementById('fill').style.width=Math.min(w/750*100,100)+'%';});
+let rec;let isRec=false;function toggleVoice(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert('Use Chrome');return;}if(isRec){rec.stop();return;}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;rec=new SR();rec.continuous=true;rec.interimResults=true;rec.lang='en-IN';rec.onstart=()=>{isRec=true;document.getElementById('voiceBtn').textContent='⏹️ Stop Voice';document.getElementById('voiceStatus').style.display='block';};rec.onresult=(e)=>{let t='';for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;if(e.results[e.results.length-1].isFinal){journal.value+=(journal.value?' ':'')+t;journal.dispatchEvent(new Event('input'));}};rec.onend=()=>{isRec=false;document.getElementById('voiceBtn').textContent='🎙️ Voice Note to Text';document.getElementById('voiceStatus').style.display='none';};rec.start();}
+function generateInsight(){const mood=selectedMood||'mixed';const q2=document.getElementById('q2').value;const q3=document.getElementById('q3').value;const txt=journal.value;if(!txt&&!q2){alert('Write a bit first');return;}const insights={highschool:`I see ${mood} around ${q2||'studies'}. Normal before exams. Try 25-min focus + 5-min dump. Win: ${q3||'one chapter'} builds momentum.`,graduate:`Feeling ${mood} about ${q2||'career'} is common. Confusion = many options. Action ${q3||'research one role'} gives data.`,teacher:`As teacher feeling ${mood}, you carry 30+ emotions. ${q2||'Class'} staying with you means you care. Recharge: ${q3||'walk/music'}.`,housewife:`Feeling ${mood} at home with ${q2||'family load'} is heavy work. Need for ${q3||'me-time'} is maintenance. Voice dump after lunch daily.`,corporate:`Corporate brain looping on ${q2||'work'} with ${mood} - mind not off. Step ${q3||'log off at 8pm'} is boundary, not laziness.`};document.getElementById('insightBox').style.display='block';document.getElementById('insightText').textContent=insights[selectedRole];}
+function saveEntry(){const words=journal.value.trim()?journal.value.trim().split(/\s+/).length:0;let entries=JSON.parse(localStorage.getItem('ms_entries')||'[]');entries.unshift({role:selectedRole,mood:selectedMood,words,date:new Date().toLocaleDateString()});localStorage.setItem('ms_entries',JSON.stringify(entries));localStorage.setItem('ms_words',(parseInt(localStorage.getItem('ms_words')||'0')+words));alert('Saved!');journal.value='';document.getElementById('q2').value='';document.getElementById('q3').value='';journal.dispatchEvent(new Event('input'));loadStats();}
+function loadStats(){let entries=JSON.parse(localStorage.getItem('ms_entries')||'[]');document.getElementById('wEntries').textContent=entries.length;document.getElementById('wWords').textContent=localStorage.getItem('ms_words')||0;if(entries.length){const moods=entries.map(e=>e.mood).filter(Boolean);if(moods.length)document.getElementById('wMood').textContent=moods[0].split(' ')[1]||moods[0];document.getElementById('weeklySummary').textContent=`This week: ${entries.length} dumps, ${localStorage.getItem('ms_words')||0} words. Top: ${moods[0]||'mixed'}. 3 more entries unlocks full report.`;}}
+</script>
+</body>
+</html>
