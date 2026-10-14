@@ -1,0 +1,8 @@
+{
+  "name": "Mindspace - AI Mentor",
+  "short_name": "Mindspace",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fef6ef",
+  "theme_color": "#000000"
+}
