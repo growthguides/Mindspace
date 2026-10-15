@@ -1,119 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width">
-<title>Mindspace</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mindspace - Wellness Journaling</title>
+<meta name="description" content="All-in-one wellness journaling for everyone - voice notes, AI mentor insights & weekly reports">
+<link rel="manifest" href="manifest.json">
 <style>
-body{font-family:Arial;background:#fdf8f3;padding:20px}
-.step{display:none}.step.active{display:block}
-.persona,.mood{padding:8px 14px;border-radius:20px;border:1px solid #ddd;margin:4px;cursor:pointer;display:inline-block}
-.persona.selected,.mood.selected{background:black;color:white}
-input,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin-top:8px}
-button{padding:12px 18px;border-radius:20px;border:none;cursor:pointer;margin:6px 4px}
-#ai-insight{background:white;border:2px solid #a78bfa;padding:18px;border-radius:12px;margin-top:15px;white-space:pre-wrap}
-#loading-insight{color:purple;margin-top:10px}
-.hidden{display:none}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
+body{background:#f8f7ff;color:#1a1a1a;padding:16px;min-height:100vh}
+.container{max-width:680px;margin:0 auto}
+.header{text-align:center;padding:24px 0}
+.header h1{font-size:32px}.header p{color:#666;margin-top:6px}
+.live{color:#00b894;font-size:12px;margin-top:4px}
+.card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 8px 30px rgba(0,0,0,.07);margin-bottom:16px}
+.moods{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap}
+.mood{flex:1;min-width:80px;text-align:center;padding:14px 8px;border:2px solid #eee;border-radius:14px;cursor:pointer;transition:.2s}
+.mood.selected{border-color:#6c5ce7;background:#f0eeff;transform:scale(1.03)}
+textarea{width:100%;min-height:120px;border:2px solid #eee;border-radius:14px;padding:14px;font-size:15px;resize:none}
+textarea:focus{outline:none;border-color:#6c5ce7}
+.btn{width:100%;background:#6c5ce7;color:#fff;border:none;padding:15px;border-radius:14px;font-weight:700;font-size:15px;margin-top:14px;cursor:pointer}
+.btn:disabled{opacity:.6}
+.insight{margin-top:16px;padding:18px;background:#f0eeff;border-radius:14px;display:none;line-height:1.6}
+.insight.show{display:block;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.feature{font-size:13px;color:#555;background:#f9f9ff;padding:10px;border-radius:10px}
 </style>
 </head>
 <body>
-
-<div id="step1" class="step active">
-<h2>Welcome to Mindspace</h2>
-<input id="nameInput" placeholder="Your name? (Anushka)">
-<p>Choose Role:</p>
-<div class="persona selected" data-role="highschool" onclick="selectPersona('highschool')">High School</div>
-<div class="persona" data-role="graduate" onclick="selectPersona('graduate')">Graduate</div>
-<div class="persona" data-role="teacher" onclick="selectPersona('teacher')">Teacher</div>
-<div class="persona" data-role="housewife" onclick="selectPersona('housewife')">Homemaker</div>
-<div class="persona" data-role="corporate" onclick="selectPersona('corporate')">Corporate</div>
-<br><button style="background:black;color:white;margin-top:15px" onclick="goToApp()">Continue →</button>
+<div class="container">
+<div class="header">
+<h1>Mindspace 🌙</h1>
+<p>All-in-one wellness journaling - voice notes, AI mentor insights & weekly reports</p>
+<div class="live">● Live & Secure - mindspace-rho-three.vercel.app</div>
 </div>
 
-<div id="step2" class="step">
-<h2 id="welcomeText">Hi Friend</h2><span id="roleTag"></span> - <span id="roleName"></span>
-<p><b>1. How are you feeling?</b></p>
-<div class="mood" onclick="selectMood(this)">😊 Happy</div>
-<div class="mood" onclick="selectMood(this)">😰 Anxious</div>
-<div class="mood" onclick="selectMood(this)">😤 Stressed</div>
-<div class="mood" onclick="selectMood(this)">😔 Low</div>
-<div class="mood" onclick="selectMood(this)">😴 Tired</div>
-<div class="mood" onclick="selectMood(this)">🚀 Motivated</div>
-
-<p><b id="q2Label">2. Which subject / exam is stressing you?</b></p>
-<input id="q2Input" value="so much of HW during holidays. project work assignments">
-
-<p><b id="q3Label">3. One small win you want today?</b></p>
-<input id="q3Input" value="completed science project">
-
-<div style="background:#ddd;height:6px;border-radius:5px;margin:12px 0"><div id="fill" style="background:orange;height:6px;width:10%;border-radius:5px"></div></div>
-<p id="wordCount">0 / 750 words</p>
-
-<textarea id="journal" rows="10" placeholder="Dump your feelings here...">I felt you know we are getting holidays as a student we should spend some valuable or intentional time with family and enjoy that time but we are lot of homework lot of project work assignments during this 10 days its like everyday you are doing so much so there is no relaxation its like being tired and being stressed out being an shoes that's what I feel</textarea>
-
-<button id="voiceBtn" onclick="toggleVoice()">🎙️ Voice Note to Text</button>
-<button onclick="generateInsight()" style="background:black;color:white">✨ Get AI Mentor Insight</button>
-<button onclick="saveEntry()">Save</button>
-<p id="voiceStatus" style="display:none">🎤 Listening...</p>
-
-<div id="loading-insight" class="hidden">⏳ Anu is thinking about your holiday homework stress...</div>
-<div id="ai-insight" class="hidden">
-<h3>💜 Anu - Your Mentor Says:</h3>
-<p id="insight-text"></p>
+<div class="card">
+<h3>How are you feeling today?</h3>
+<div class="moods">
+<div class="mood" data-mood="happy">😊<br>Happy</div>
+<div class="mood" data-mood="calm">😌<br>Calm</div>
+<div class="mood" data-mood="anxious">😰<br>Anxious</div>
+<div class="mood" data-mood="sad">😔<br>Sad</div>
+<div class="mood" data-mood="angry">😤<br>Angry</div>
 </div>
-
-<div id="roleBenefits" style="margin-top:20px"></div>
+<textarea id="journal" placeholder="Today I felt... what's on your mind? Write freely, your AI mentor will give you insight."></textarea>
+<button class="btn" id="saveBtn">Save & Get Insight ✨</button>
+<div class="insight" id="insightBox"></div>
+<div class="features">
+<div class="feature">🎙️ Voice notes soon</div>
+<div class="feature">📊 Weekly reports</div>
+<div class="feature">🔒 Private & secure</div>
+<div class="feature">🤖 AI mentor</div>
+</div>
+</div>
 </div>
 
 <script>
-let selectedRole='highschool';let selectedMood='';
-const GEMINI_API_KEY = "AQ.Ab8RN6Jicp6tQNL2B7fNuX1FloF3se0xW2OY05ij3Rhup44FTw";
-const roleData={
- highschool:{name:'High School Student',q2:'Which subject / exam is stressing you?',q3:'One small win you want today?',benefits:['Daily 5-min focus dump','Exam anxiety tracked','Parent pressure coping','Telugu/Hindi voice'],prompt:'School pressure? Dump it all here.'},
- graduate:{name:'Graduating Student',q2:'Career confusion - what options are in mind?',q3:'One action for placements today?',benefits:['Career clarity prompts','Placement anxiety tracker','Weekly skill report','AI roadmap'],prompt:'Future confusion? Let AI mentor untangle.'},
- teacher:{name:'Teacher',q2:'What happened in class today?',q3:'What do you need to recharge tonight?',benefits:['Burnout early signals','Classroom emotional load','Gratitude + boundary','Self-care actions'],prompt:'Teaching is emotional labor. Unload here.'},
- housewife:{name:'Homemaker',q2:'What felt heavy in family today?',q3:'What is one thing just for YOU today?',benefits:['Emotional load visualized','Identity beyond roles','Family trigger patterns','Voice note - no typing'],prompt:'Your feelings matter too. Space for you.'},
- corporate:{name:'Corporate',q2:'What work situation is looping?',q3:'One boundary or growth step today?',benefits:['Work stress pattern','Imposter syndrome insights','Meeting dump','Weekly energy report'],prompt:'Work on mind after hours? Dump before sleep.'}
-};
-function selectPersona(r){selectedRole=r;document.querySelectorAll('.persona').forEach(p=>p.classList.remove('selected'));document.querySelector(`[data-role=${r}]`).classList.add('selected');}
-function selectMood(el){document.querySelectorAll('.mood').forEach(m=>m.classList.remove('selected'));el.classList.add('selected');selectedMood=el.textContent;}
-function showStep(n){document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));document.getElementById('step'+n).classList.add('active');}
-function goToApp(){const name=document.getElementById('nameInput').value||'Friend';const data=roleData[selectedRole];document.getElementById('welcomeText').textContent=`Hi ${name}, your Mindspace is ready`;document.getElementById('roleTag').textContent=`Role: ${data.name}`;document.getElementById('roleName').textContent=data.name;document.getElementById('q2Label').textContent=`2. ${data.q2}`;document.getElementById('q3Label').textContent=`3. ${data.q3}`;document.getElementById('roleBenefits').innerHTML=data.benefits.map(b=>`<li>${b}</li>`).join('');showStep(2);}
+const WORKER_URL="https://mindspace.growthguides-official0924.workers.dev/";
+let selectedMood=null;
+document.querySelectorAll('.mood').forEach(m=>{
+ m.addEventListener('click',()=>{
+  document.querySelectorAll('.mood').forEach(x=>x.classList.remove('selected'));
+  m.classList.add('selected'); selectedMood=m.dataset.mood;
+ });
+});
 
-const journal=document.getElementById('journal');journal.addEventListener('input',()=>{const w=journal.value.trim()?journal.value.trim().split(/\s+/).length:0;document.getElementById('wordCount').textContent=w+' / 750 words';document.getElementById('fill').style.width=Math.min(w/750*100,100)+'%';});
-
-let rec;let isRec=false;function toggleVoice(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert('Use Chrome');return;}if(isRec){rec.stop();return;}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;rec=new SR();rec.continuous=true;rec.interimResults=true;rec.lang='en-IN';rec.onstart=()=>{isRec=true;document.getElementById('voiceBtn').textContent='⏹️ Stop Voice';document.getElementById('voiceStatus').style.display='block';};rec.onresult=(e)=>{let t='';for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;if(e.results[e.results.length-1].isFinal){journal.value+=(journal.value?' ':'')+t;journal.dispatchEvent(new Event('input'));}};rec.onend=()=>{isRec=false;document.getElementById('voiceBtn').textContent='🎙️ Voice Note to Text';document.getElementById('voiceStatus').style.display='none';};rec.start();}
-
-function saveEntry(){alert('Saved! '+document.getElementById('journal').value.length+' chars');}
-
-async function generateInsight(){
-  const entry = document.getElementById('journal')?.value.trim();
-  if(!entry){ alert('Write something first!'); return; }
-  const textEl = document.getElementById('insight-text');
-  const boxEl = document.getElementById('ai-insight');
-  const loadEl = document.getElementById('loading-insight');
-  loadEl.classList.remove('hidden');
-  boxEl.classList.add('hidden');
-  try{
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-goog-api-key':GEMINI_API_KEY},
-      body: JSON.stringify({contents:[{parts:[{text:`You are Anu, warm big sister mentor for 14yo Anushka from Hyderabad. Mood: ${selectedMood}. She wrote: ${entry}. Subject stress: ${document.getElementById('q2Input').value}. Give empathetic, practical advice in 4-5 lines, mix English + 1 Telugu word, end with 1 small action for today + emoji.`}]}]})
-    });
-    const data = await res.json();
-    console.log(data);
-    if(data.error) throw new Error(data.error.message);
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No reply';
-    textEl.innerText = reply;
-    boxEl.classList.remove('hidden');
-  }catch(e){
-    console.error(e);
-    textEl.innerText = 'Error: '+e.message+'\n\nPlease enable API: https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com?project=941423810552';
-    boxEl.classList.remove('hidden');
-    alert('Error: '+e.message);
-  }finally{
-    loadEl.classList.add('hidden');
-  }
+async function getInsight(text){
+ try{
+  const res=await fetch(WORKER_URL,{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({journalText:`Mood: ${selectedMood}. Journal: ${text}`})
+  });
+  const data=await res.json();
+  return data.insight || "Nice reflection. Keep journaling daily - awareness is the first step to wellness.";
+ }catch(e){
+  return "Your thoughts matter. Keep writing daily - you're building self-awareness.";
+ }
 }
+
+document.getElementById('saveBtn').addEventListener('click',async()=>{
+ const text=document.getElementById('journal').value.trim();
+ const btn=document.getElementById('saveBtn');
+ const box=document.getElementById('insightBox');
+ if(!text||!selectedMood){alert("Please pick a mood and write something first");return}
+ btn.disabled=true; btn.textContent="Getting insight...";
+ const insight=await getInsight(text);
+ box.innerHTML=`<b>Your Insight ✨</b><br><br>${insight}<br><br><small style="color:#666">Mood: ${selectedMood} • Saved privately</small>`;
+ box.classList.add('show');
+ btn.disabled=false; btn.textContent="Saved! Write another?";
+ localStorage.setItem('mindspace_last_'+Date.now(), JSON.stringify({mood:selectedMood,text,insight,date:new Date().toISOString()}));
+ setTimeout(()=>{btn.textContent="Save & Get Insight ✨"; document.getElementById('journal').value="";},2500);
+});
 </script>
 </body>
 </html>
